@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Concurrency/section-6/final-project/data"
 	"database/sql"
 	"fmt"
 	"github.com/alexedwards/scs/redisstore"
@@ -44,6 +45,7 @@ func main() {
 		InfoLog:  infoLog,
 		ErrorLog: errorLog,
 		Wait:     &wg,
+		Models:   data.New(db),
 	}
 
 	// set up mail

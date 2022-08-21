@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Concurrency/section-6/final-project/data"
 	"database/sql"
 	"github.com/alexedwards/scs/v2"
 	"log"
@@ -13,4 +14,5 @@ type Config struct {
 	InfoLog  *log.Logger
 	ErrorLog *log.Logger
 	Wait     *sync.WaitGroup
+	Models   *data.Models
 }
