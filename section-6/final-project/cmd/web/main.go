@@ -3,6 +3,7 @@ package main
 import (
 	"Concurrency/section-6/final-project/data"
 	"database/sql"
+	"encoding/gob"
 	"fmt"
 	"github.com/alexedwards/scs/redisstore"
 	"github.com/alexedwards/scs/v2"
@@ -120,6 +121,8 @@ func openDB(dsn string) (*sql.DB, error) {
 }
 
 func initSession() *scs.SessionManager {
+	gob.Register(data.User{})
+
 	// set up session
 	session := scs.New()
 	session.Store = redisstore.New(initRedis())

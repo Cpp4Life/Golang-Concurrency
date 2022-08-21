@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Concurrency/section-6/final-project/constants"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -57,9 +58,9 @@ func (app *Config) render(w http.ResponseWriter, r *http.Request, t string, td *
 }
 
 func (app *Config) AddDefaultData(td *TemplateData, r *http.Request) *TemplateData {
-	td.Flash = app.Session.PopString(r.Context(), "flash")
-	td.Warning = app.Session.PopString(r.Context(), "warning")
-	td.Error = app.Session.PopString(r.Context(), "error")
+	td.Flash = app.Session.PopString(r.Context(), constants.FlashTag)
+	td.Warning = app.Session.PopString(r.Context(), constants.WarningTag)
+	td.Error = app.Session.PopString(r.Context(), constants.ErrorTag)
 	if app.IsAuthenticated(r) {
 		td.Authenticated = true
 		// TODO - get more user information
@@ -70,5 +71,5 @@ func (app *Config) AddDefaultData(td *TemplateData, r *http.Request) *TemplateDa
 }
 
 func (app *Config) IsAuthenticated(r *http.Request) bool {
-	return app.Session.Exists(r.Context(), "userId")
+	return app.Session.Exists(r.Context(), constants.UserIdTag)
 }
