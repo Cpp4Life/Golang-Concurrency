@@ -23,8 +23,8 @@ func (app *Config) PostLoginPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get email and password from form post
-	email := r.Form.Get("email")
-	password := r.Form.Get("password")
+	email := r.Form.Get(constants.EmailTag)
+	password := r.Form.Get(constants.PasswordTag)
 
 	user, err := app.Models.User.GetByEmail(email)
 	if err != nil {
@@ -42,6 +42,14 @@ func (app *Config) PostLoginPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !validPassword {
+		msg := Message{
+			To:      email,
+			Subject: "Failed log in attempt",
+			Data:    "Invalid login attempt!",
+		}
+
+		app.sendEmail(msg)
+
 		app.Session.Put(r.Context(), constants.ErrorTag, "Invalid credentials.")
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
