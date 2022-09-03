@@ -10,4 +10,5 @@ const (
 	PasswordTag  = "password"
 	FirstNameTag = "first-name"
 	LastNameTag  = "last-name"
+	IdTag        = "id"
 )

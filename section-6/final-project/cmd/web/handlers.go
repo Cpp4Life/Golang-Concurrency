@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 )
 
 func (app *Config) HomePage(w http.ResponseWriter, r *http.Request) {
@@ -153,10 +154,54 @@ func (app *Config) ActivateAccount(w http.ResponseWriter, r *http.Request) {
 
 	app.Session.Put(r.Context(), constants.FlashTag, "Account activated. You can now log in")
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
+
+func (app *Config) ChooseSubscription(w http.ResponseWriter, r *http.Request) {
+	plans, err := app.Models.Plan.GetAll()
+	if err != nil {
+		app.ErrorLog.Println(err)
+		return
+	}
+
+	dataMap := make(map[string]any)
+	dataMap["plans"] = plans
+
+	app.render(w, r, "plans.page.gohtml", &TemplateData{
+		Data: dataMap,
+	})
+}
+
+func (app *Config) SubscribeToPlan(w http.ResponseWriter, r *http.Request) {
+	// get the id of the plan that is chosen
+	id := r.URL.Query().Get(constants.IdTag)
+
+	planId, _ := strconv.Atoi(id)
+
+	// get the plan from the database
+	plan, err := app.Models.Plan.GetOne(planId)
+	if err != nil {
+		app.Session.Put(r.Context(), constants.ErrorTag, "Unable to find plan.")
+		http.Redirect(w, r, "/members/plans", http.StatusSeeOther)
+		return
+	}
+
+	// get the user from the session
+	user, ok := app.Session.Get(r.Context(), constants.UserTag).(data.User)
+	if !ok {
+		app.Session.Put(r.Context(), constants.ErrorTag, "Log in first!")
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
 
 	// generate an invoice
 
-	// send an email with attachments
-
 	// send an email with the invoice attached
+
+	// generate a manual
+
+	// send an email with the manual attached
+
+	// subscribe the user to an account
+
+	// redirect
 }
